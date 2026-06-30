@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% if review %}리뷰 수정{% else %}리뷰 작성{% endif %}</title>
+</head>
+<body>
+    <h1>Movie review</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label>제목:</label>
+        <input type="text" name="title" value="{{ review.title|default:'' }}" required><br>
+
+        <label>개봉년도:</label>
+        <input type="text" name="release_year" value="{{ review.release_year|default:'' }}" required><br>
+
+        <label>장르:</label>
+        <input type="text" name="genre" value="{{ review.genre|default:'' }}" required><br>
+
+        <label>별점:</label>
+        <input type="text" name="rating" value="{{ review.rating|default:'' }}" required><br>
+
+        <label>러닝타임:</label>
+        <input type="text" name="running_time" value="{{ review.running_time|default:'' }}" required><br>
+
+        <label>리뷰:</label><br>
+        <textarea name="content" rows="10" cols="50">{{ review.content|default:'' }}</textarea><br>
+
+        <label>감독:</label>
+        <input type="text" name="director" value="{{ review.director|default:'' }}" required><br>
+
+        <label>배우:</label>
+        <input type="text" name="actor" value="{{ review.actor|default:'' }}" required><br>
+
+        <button type="submit">Save</button>
+    </form>
+</body>
+</html>
