@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-6">개발툴 등록</h1>
+<p class="text-gray-500 mb-6">개발툴 정보를 입력하고 등록해주세요.</p>
+
+<form method="POST" class="bg-white p-8 rounded-xl shadow flex flex-col gap-4">
+  {% csrf_token %}
+  <div>
+    <label class="block text-sm font-semibold mb-1">이름</label>
+    <input type="text" name="name" class="border rounded w-full p-2" required>
+  </div>
+  <div>
+    <label class="block text-sm font-semibold mb-1">분류</label>
+    <input type="text" name="kind" class="border rounded w-full p-2" required>
+  </div>
+  <div>
+    <label class="block text-sm font-semibold mb-1">개발툴 설명</label>
+    <textarea name="content" rows="4" class="border rounded w-full p-2" required></textarea>
+  </div>
+  <button type="submit" class="bg-indigo-500 hover:bg-indigo-600 text-white py-2 rounded font-semibold">SUBMIT</button>
+</form>
+{% endblock %}
