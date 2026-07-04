@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-2">{{ devtool.name }}</h1>
+<p class="text-gray-500 mb-6">개발툴의 상세 정보입니다. 수정/삭제/목록 버튼을 통해 관리할 수 있습니다.</p>
+
+<div class="bg-white p-8 rounded-xl shadow flex flex-col gap-4">
+  <div>
+    <span class="font-semibold">이름:</span> {{ devtool.name }}
+  </div>
+  <div>
+    <span class="font-semibold">분류:</span> {{ devtool.kind }}
+  </div>
+  <div>
+    <span class="font-semibold">설명:</span> {{ devtool.content }}
+  </div>
+
+  <h2 class="text-lg font-bold mt-4">이 개발툴을 사용하는 아이디어 목록</h2>
+  <ul>
+    {% for idea in devtool.idea_set.all %}
+    <li>
+      <a href="{% url 'idea_detail' idea.pk %}" class="text-indigo-600 hover:underline">
+        {{ idea.title }}
+      </a>
+    </li>
+    {% empty %}
+    <li class="text-gray-400">연결된 아이디어가 없습니다.</li>
+    {% endfor %}
+  </ul>
+
+  <div class="flex gap-3 mt-4">
+    <form method="POST" action="{% url 'devtool_delete' devtool.pk %}">
+      {% csrf_token %}
+      <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">삭제</button>
+    </form>
+    <a href="{% url 'devtool_update' devtool.pk %}" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">수정</a>
+    <a href="{% url 'devtool_list' %}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">목록</a>
+  </div>
+</div>
+{% endblock %}

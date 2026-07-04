@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-2">{{ idea.title }}</h1>
+<p class="text-gray-500 mb-6">아이디어의 상세 정보입니다. 수정/삭제/목록 버튼을 통해 관리할 수 있습니다.</p>
+
+<div class="bg-white p-8 rounded-xl shadow flex flex-col gap-4">
+  {% if idea.image %}
+  <img src="{{ idea.image.url }}" class="w-full h-60 object-cover rounded-lg">
+  {% endif %}
+
+  <div>
+    <span class="font-semibold">아이디어명:</span> {{ idea.title }}
+  </div>
+  <div>
+    <span class="font-semibold">아이디어 설명:</span> {{ idea.content }}
+  </div>
+  <div>
+    <span class="font-semibold">아이디어 관심도:</span> {{ idea.interest }}
+  </div>
+  <div>
+    <span class="font-semibold">해당 개발툴:</span>
+    {% if idea.devtool %}
+    <a href="{% url 'devtool_detail' idea.devtool.pk %}" class="text-indigo-600 hover:underline">
+      {{ idea.devtool.name }}
+    </a>
+    {% endif %}
+  </div>
+  <div>
+    <span class="font-semibold">찜 여부:</span>
+    {% if is_starred %}
+    ⭐ 찜한 아이디어입니다
+    {% else %}
+    ☆ 찜하지 않은 아이디어입니다
+    {% endif %}
+  </div>
+
+  <div class="flex gap-3 mt-4">
+    <form method="POST" action="{% url 'idea_delete' idea.pk %}">
+      {% csrf_token %}
+      <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">삭제</button>
+    </form>
+    <a href="{% url 'idea_update' idea.pk %}" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">수정</a>
+    <a href="{% url 'idea_list' %}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">목록</a>
+    <a href="{% url 'idea_star' idea.pk %}" class="bg-yellow-400 hover:bg-yellow-500 text-white px-4 py-2 rounded">
+      {% if is_starred %}⭐ 찜 취소{% else %}☆ 찜하기{% endif %}
+    </a>
+  </div>
+</div>
+{% endblock %}

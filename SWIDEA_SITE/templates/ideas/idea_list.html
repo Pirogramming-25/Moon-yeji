@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-bold">아이디어 목록</h1>
+  <div class="flex gap-2">
+    <a href="?sort=star" class="px-3 py-1 rounded {% if sort == 'star' %}bg-indigo-500 text-white{% else %}bg-gray-200{% endif %}">찜하기순</a>
+    <a href="?sort=name" class="px-3 py-1 rounded {% if sort == 'name' %}bg-indigo-500 text-white{% else %}bg-gray-200{% endif %}">이름순</a>
+    <a href="?sort=oldest" class="px-3 py-1 rounded {% if sort == 'oldest' %}bg-indigo-500 text-white{% else %}bg-gray-200{% endif %}">등록순</a>
+    <a href="?sort=latest" class="px-3 py-1 rounded {% if sort == 'latest' %}bg-indigo-500 text-white{% else %}bg-gray-200{% endif %}">최신순</a>
+  </div>
+</div>
+
+<div class="grid grid-cols-4 gap-4">
+  {% for idea in ideas %}
+  <div class="bg-white rounded-xl shadow p-4 flex flex-col gap-2">
+    <div class="relative">
+      {% if idea.image %}
+      <img src="{{ idea.image.url }}" class="w-full h-40 object-cover rounded-lg">
+      {% endif %}
+      <a href="{% url 'idea_star' idea.pk %}" class="absolute top-2 right-2 text-2xl">
+        {% if request.user in idea.ideastar_set.all|dictsort:"user" %}
+        ⭐
+        {% else %}
+        ☆
+        {% endif %}
+      </a>
+    </div>
+    <a href="{% url 'idea_detail' idea.pk %}" class="font-bold text-indigo-600 hover:underline">{{ idea.title }}</a>
+    <p class="text-sm text-gray-500">해당 개발툴 : {{ idea.devtool }}</p>
+    <div class="flex items-center gap-2 mt-2">
+      <span class="text-sm text-gray-500">아이디어 관심도 :</span>
+      <a href="{% url 'idea_interest' idea.pk 'down' %}" class="bg-gray-200 px-2 rounded hover:bg-gray-300">-</a>
+      <span>{{ idea.interest }}</span>
+      <a href="{% url 'idea_interest' idea.pk 'up' %}" class="bg-gray-200 px-2 rounded hover:bg-gray-300">+</a>
+    </div>
+  </div>
+  {% empty %}
+  <p class="text-gray-400 col-span-4">등록된 아이디어가 없습니다.</p>
+  {% endfor %}
+</div>
+{% endblock %}

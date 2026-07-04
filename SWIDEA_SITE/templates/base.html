@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>아이디어 사이트 제작</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <nav class="bg-gray-800 px-6 py-4 flex items-center gap-6">
+    <a href="/" class="font-bold text-white text-lg">아이디어 사이트 제작</a>
+    <div class="flex items-center gap-4 ml-auto">
+      <a href="{% url 'idea_list' %}" class="text-gray-300 hover:text-white">아이디어 목록</a>
+      <a href="{% url 'idea_form' %}" class="text-gray-300 hover:text-white">아이디어 등록</a>
+      <a href="{% url 'devtool_list' %}" class="text-gray-300 hover:text-white">개발툴 관리</a>
+      <a href="{% url 'devtool_form' %}" class="text-gray-300 hover:text-white">개발툴 등록</a>
+    </div>
+  </nav>
+  <main class="max-w-5xl mx-auto mt-10 px-4">
+    {% block content %}
+    {% endblock %}
+  </main>
+</body>
+</html>
