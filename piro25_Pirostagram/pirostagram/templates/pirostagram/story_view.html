@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ story_user.username }}의 스토리 - Pirostagram</title>
+    <style>
+        body { display:flex; align-items:center; justify-content:center; background:#000; height:100vh; margin:0; }
+        .story-modal { position:relative; background:#fff; border-radius:12px; overflow:hidden; max-width:420px; width:90%; }
+        .story-modal img { width:100%; display:block; max-height:80vh; object-fit:contain; background:#000; }
+        .story-nav { position:absolute; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.4); color:#fff; border:none; font-size:20px; padding:8px 14px; cursor:pointer; border-radius:50%; }
+        .story-prev { left:10px; }
+        .story-next { right:10px; }
+        .story-close { position:absolute; top:10px; right:10px; background:rgba(0,0,0,0.4); color:#fff; text-decoration:none; border-radius:50%; width:30px; height:30px; text-align:center; line-height:30px; font-size:18px; }
+        .story-counter { position:absolute; top:10px; left:10px; color:#fff; background:rgba(0,0,0,0.4); padding:4px 10px; border-radius:12px; font-size:12px; }
+    </style>
+</head>
+<body>
+    <div class="story-modal">
+        <a href="{% url 'pirostagram:home' %}" class="story-close">&times;</a>
+        <span class="story-counter" id="counter"></span>
+        {% for image in images %}
+            <img src="{{ image.image.url }}" class="story-img" style="display:none;">
+        {% endfor %}
+        <button class="story-nav story-prev" onclick="prevImg()">&#10094;</button>
+        <button class="story-nav story-next" onclick="nextImg()">&#10095;</button>
+    </div>
+
+    <script>
+        const imgs = document.querySelectorAll('.story-img');
+        let current = 0;
+
+        function show(i) {
+            imgs.forEach(img => img.style.display = 'none');
+            imgs[i].style.display = 'block';
+            document.getElementById('counter').textContent = (i+1) + ' / ' + imgs.length;
+        }
+
+        function nextImg() {
+            if (current < imgs.length - 1) {
+                current++;
+                show(current);
+            } else {
+                window.location.href = "{% url 'pirostagram:home' %}";
+            }
+        }
+
+        function prevImg() {
+            if (current > 0) {
+                current--;
+                show(current);
+            }
+        }
+
+        show(current);
+    </script>
+</body>
+</html>

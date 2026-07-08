@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>스토리 업로드 - Pirostagram</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'pirostagram/style.css' %}">
+</head>
+<body>
+    <div class="sidebar">
+        <h1>Pirostagram</h1>
+        <a href="{% url 'pirostagram:home' %}">홈</a>
+        <a href="{% url 'pirostagram:user_search' %}">유저 검색</a>
+        <a href="{% url 'pirostagram:post_create' %}">게시글 작성</a>
+        <a href="{% url 'pirostagram:story_create' %}">스토리 업로드</a>
+        <a href="{% url 'pirostagram:profile' request.user.username %}">프로필</a>
+        <a href="{% url 'pirostagram:logout' %}">로그아웃</a>
+    </div>
+
+    <div class="main-content">
+        <h2>스토리 업로드</h2>
+
+        <div class="post-card">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="file" name="images" multiple accept="image/*" required>
+                <br><br>
+                <button type="submit" class="follow-btn">업로드</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

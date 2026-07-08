@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ profile_user.username }} - Pirostagram</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'pirostagram/style.css' %}">
+</head>
+<body>
+    <div class="sidebar">
+        <h1>Pirostagram</h1>
+        <a href="{% url 'pirostagram:home' %}">홈</a>
+        <a href="{% url 'pirostagram:user_search' %}">유저 검색</a>
+        <a href="{% url 'pirostagram:post_create' %}">게시글 작성</a>
+        <a href="{% url 'pirostagram:story_create' %}">스토리 업로드</a>
+        <a href="{% url 'pirostagram:profile' request.user.username %}">프로필</a>
+        <a href="{% url 'pirostagram:logout' %}">로그아웃</a>
+    </div>
+
+    <div class="main-content">
+        <div class="profile-header">
+            <div class="profile-avatar">
+                {% if profile_user.profile.avatar %}
+                    <img src="{{ profile_user.profile.avatar.url }}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">
+                {% else %}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.5" width="60" height="60">
+                        <circle cx="12" cy="8" r="4"></circle>
+                        <path d="M4 20c0-4 4-6 8-6s8 2 8 6"></path>
+                    </svg>
+                {% endif %}
+            </div>
+            <div>
+                <div class="profile-name-row">
+                    <span class="profile-username">{{ profile_user.username }}</span>
+                    {% if profile_user == request.user %}
+                        <button class="edit-profile-btn">프로필 수정하기</button>
+                    {% elif is_following %}
+                        <form method="POST" action="{% url 'pirostagram:follow_toggle' profile_user.username %}">
+                            {% csrf_token %}
+                            <button type="submit" class="follow-btn following-btn">팔로잉</button>
+                        </form>
+                    {% else %}
+                        <form method="POST" action="{% url 'pirostagram:follow_toggle' profile_user.username %}">
+                            {% csrf_token %}
+                            <button type="submit" class="follow-btn">팔로우</button>
+                        </form>
+                    {% endif %}
+                </div>
+                <p class="profile-stats">
+                    게시물 <strong>{{ posts.count }}</strong>
+                    팔로워 <strong>{{ follower_count }}</strong>
+                    팔로잉 <strong>{{ following_count }}</strong>
+                </p>
+            </div>
+        </div>
+
+        {% if not posts %}
+            <p>아직 게시물이 없습니다!<br>나만의 게시글을 만들어보세요!</p>
+        {% endif %}
+
+        {% for post in posts %}
+            <div class="post-card">
+                {% if post.image %}
+                    <img src="{{ post.image.url }}">
+                {% endif %}
+                <p>{{ post.content }}</p>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
