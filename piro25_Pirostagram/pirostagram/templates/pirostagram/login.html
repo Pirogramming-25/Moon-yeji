@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인 - Pirostagram</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'pirostagram/style.css' %}">
+    <style>
+        body { display: block; text-align: center; padding-top: 80px; }
+        .auth-box { max-width: 360px; margin: 0 auto; background: #fff; padding: 32px; border-radius: 12px; border: 1px solid #e5e5e5; }
+        .auth-box h1 { color: #4caf50; margin-bottom: 24px; }
+        .auth-box input { width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .auth-box button { width: 100%; padding: 10px; background: #4caf50; color: #fff; border: none; border-radius: 8px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="auth-box">
+        <h1>Pirostagram</h1>
+        <h2>로그인</h2>
+
+        {% if messages %}
+            {% for message in messages %}
+                <p style="color:red;">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+            <input type="text" name="username" placeholder="아이디" required>
+            <input type="password" name="password" placeholder="비밀번호" required>
+            <button type="submit">로그인</button>
+        </form>
+
+        <p style="margin-top:16px;"><a href="{% url 'pirostagram:signup' %}">계정이 없으신가요? 회원가입</a></p>
+    </div>
+</body>
+</html>

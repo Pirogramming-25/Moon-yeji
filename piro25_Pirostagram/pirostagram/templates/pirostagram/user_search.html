@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>유저 검색 - Pirostagram</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'pirostagram/style.css' %}">
+</head>
+<body>
+    <div class="sidebar">
+        <h1>Pirostagram</h1>
+        <a href="{% url 'pirostagram:home' %}">홈</a>
+        <a href="{% url 'pirostagram:user_search' %}">유저 검색</a>
+        <a href="{% url 'pirostagram:post_create' %}">게시글 작성</a>
+        <a href="{% url 'pirostagram:story_create' %}">스토리 업로드</a>
+        <a href="{% url 'pirostagram:profile' request.user.username %}">프로필</a>
+        <a href="{% url 'pirostagram:logout' %}">로그아웃</a>
+    </div>
+
+    <div class="main-content">
+        <h2>유저 검색</h2>
+
+        <form method="GET" style="margin: 20px 0;">
+            <input type="text" name="q" value="{{ query }}" placeholder="아이디로 검색" style="padding:8px; border-radius:8px; border:1px solid #ddd; width:70%;">
+            <button type="submit" style="padding:8px 16px; border-radius:8px; border:none; background:#4caf50; color:#fff; cursor:pointer;">검색</button>
+        </form>
+
+        {% if query %}
+            <p>"{{ query }}"로 검색한 결과</p>
+            {% for user in users %}
+                <div class="user-card">
+                    <div style="display:flex; align-items:center; gap:16px;">
+                        <div class="story-avatar" style="border-color:#eee;">
+                            {% if user.profile.avatar %}
+                                <img src="{{ user.profile.avatar.url }}">
+                            {% else %}
+                                <svg viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.5" width="40" height="40">
+                                    <circle cx="12" cy="8" r="4"></circle>
+                                    <path d="M4 20c0-4 4-6 8-6s8 2 8 6"></path>
+                                </svg>
+                            {% endif %}
+                        </div>
+                        <a href="{% url 'pirostagram:profile' user.username %}">{{ user.username }}</a>
+                    </div>
+                </div>
+            {% empty %}
+                <p>검색 결과가 없습니다.</p>
+            {% endfor %}
+        {% endif %}
+    </div>
+</body>
+</html>

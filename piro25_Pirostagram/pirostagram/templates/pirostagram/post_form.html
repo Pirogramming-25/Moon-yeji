@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 작성 - Pirostagram</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'pirostagram/style.css' %}">
+</head>
+<body>
+    <div class="sidebar">
+        <h1>Pirostagram</h1>
+        <a href="{% url 'pirostagram:home' %}">홈</a>
+        <a href="{% url 'pirostagram:user_search' %}">유저 검색</a>
+        <a href="{% url 'pirostagram:post_create' %}">게시글 작성</a>
+        <a href="{% url 'pirostagram:story_create' %}">스토리 업로드</a>
+        <a href="{% url 'pirostagram:profile' request.user.username %}">프로필</a>
+        <a href="{% url 'pirostagram:logout' %}">로그아웃</a>
+    </div>
+
+    <div class="main-content">
+        <h2>{% if is_edit %}게시글 수정{% else %}게시글 작성{% endif %}</h2>
+
+        <div class="post-card">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="follow-btn">{% if is_edit %}수정하기{% else %}게시하기{% endif %}</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

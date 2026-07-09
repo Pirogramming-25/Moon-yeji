@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Pirostagram</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'pirostagram/style.css' %}">
+</head>
+<body>
+    <div class="sidebar">
+        <h1>Pirostagram</h1>
+        <a href="{% url 'pirostagram:home' %}">홈</a>
+        <a href="{% url 'pirostagram:user_search' %}">유저 검색</a>
+        <a href="{% url 'pirostagram:post_create' %}">게시글 작성</a>
+        <a href="{% url 'pirostagram:story_create' %}">스토리 업로드</a>
+        <a href="{% url 'pirostagram:profile' request.user.username %}">프로필</a>
+        <a href="{% url 'pirostagram:logout' %}">로그아웃</a>
+    </div>
+
+    <div class="main-content">
+        <div class="story-bar">
+            {% for story in stories %}
+                <a href="{% url 'pirostagram:story_view' story.author.username %}" class="story-item">
+                    <div class="story-avatar">
+                        <img src="{{ story.images.first.image.url }}">
+                    </div>
+                    <p>{{ story.author.username }}</p>
+                </a>
+            {% endfor %}
+        </div>
+
+        {% for post in posts %}
+            <div class="post-card">
+                <p class="post-header">{{ post.author.username }}</p>
+                {% if post.image %}
+                    <img src="{{ post.image.url }}">
+                {% endif %}
+                <p>{{ post.content }}</p>
+
+                <div class="post-actions">
+                    <button 
+                        class="like-btn"
+                        data-post-id="{{ post.id }}"
+                        style="color: {% if post.id in liked_post_ids %}red{% else %}gray{% endif %};"
+                        onclick="toggleLike({{ post.id }})">
+                        ♥ 좋아요
+                    </button>
+                    <span id="like-count-{{ post.id }}">{{ post.likes.count }}</span>
+
+                    {% if post.author == request.user %}
+                        <a href="{% url 'pirostagram:post_edit' post.id %}">수정</a>
+                        <form method="POST" action="{% url 'pirostagram:post_delete' post.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" onclick="return confirm('삭제하시겠습니까?')">삭제</button>
+                        </form>
+                    {% endif %}
+                </div>
+
+                <div class="comment-section">
+                    {% for comment in post.comments.all %}
+                        <p class="comment-item">
+                            <strong>{{ comment.author.username }}</strong>: {{ comment.content }}
+                            {% if comment.author == request.user %}
+                                <form method="POST" action="{% url 'pirostagram:comment_edit' comment.id %}" style="display:inline;">
+                                    {% csrf_token %}
+                                    <input type="text" name="content" value="{{ comment.content }}" style="width:120px;">
+                                    <button type="submit">수정</button>
+                                </form>
+                                <form method="POST" action="{% url 'pirostagram:comment_delete' comment.id %}" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" onclick="return confirm('댓글을 삭제하시겠습니까?')">삭제</button>
+                                </form>
+                            {% endif %}
+                        </p>
+                    {% empty %}
+                        <p class="comment-item">댓글이 없습니다.</p>
+                    {% endfor %}
+
+                    <form method="POST" action="{% url 'pirostagram:comment_create' post.id %}" class="comment-form">
+                        {% csrf_token %}
+                        <input type="text" name="content" placeholder="댓글을 입력하세요" required>
+                        <button type="submit">등록</button>
+                    </form>
+                </div>
+            </div>
+        {% empty %}
+            <p>아직 게시글이 없습니다.</p>
+        {% endfor %}
+    </div>
+
+    <script>
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        function toggleLike(postId) {
+            fetch(`/post/${postId}/like/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                const btn = document.querySelector(`button[data-post-id="${postId}"]`);
+                const countSpan = document.getElementById(`like-count-${postId}`);
+
+                btn.style.color = data.liked ? 'red' : 'gray';
+                countSpan.textContent = data.like_count;
+            });
+        }
+    </script>
+</body>
+</html>
