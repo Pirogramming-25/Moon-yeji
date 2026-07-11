@@ -14,7 +14,7 @@ services:
 
   web:
     build: .
-    image: moonyeji/swidea-site:mysql
+    image: moonyeji0804/swidea-site:mysql
     container_name: swidea-web
     depends_on:
       db:
