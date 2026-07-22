@@ -1,0 +1,35 @@
+{% extends "my_gpt/base.html" %}
+
+{% block content %}
+<div class="card">
+    <h2>로그인</h2>
+
+    {% if request.GET.required == "1" %}
+    <script>
+        alert("로그인 후 이용해주세요");
+    </script>
+    {% endif %}
+
+    {% if form.errors %}
+        <div class="error-box" style="display:block;">
+            아이디 또는 비밀번호가 올바르지 않습니다.
+        </div>
+    {% endif %}
+
+    <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}">
+
+        <div style="margin-bottom: 12px;">
+            <label>아이디</label><br>
+            {{ form.username }}
+        </div>
+        <div style="margin-bottom: 12px;">
+            <label>비밀번호</label><br>
+            {{ form.password }}
+        </div>
+
+        <button type="submit" class="run-btn">로그인</button>
+    </form>
+</div>
+{% endblock %}
