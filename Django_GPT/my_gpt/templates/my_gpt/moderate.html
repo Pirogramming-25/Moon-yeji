@@ -1,0 +1,33 @@
+{% extends "my_gpt/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="card">
+    <h2>🚨 유해 표현 분석</h2>
+    <div class="model-info">
+        사용 모델: unitary/toxic-bert<br>
+        입력 언어: 영어
+    </div>
+
+    <textarea id="moderate-input" maxlength="1000" placeholder="영어 문장을 입력하세요 (최대 1,000자)"></textarea>
+    <br>
+    <button id="moderate-btn" class="run-btn">분석 실행</button>
+
+    <div id="moderate-loading" class="loading">처리 중...</div>
+    <div id="moderate-error" class="error-box"></div>
+    <div id="moderate-result" class="result-box" style="display:none;"></div>
+
+    <div class="history-box">
+        <h3>최근 실행 기록</h3>
+        {% for h in histories %}
+            <div class="history-item">{{ forloop.counter }}. {{ h.input_text|truncatechars:40 }} → {{ h.output_text }}</div>
+        {% empty %}
+            <div class="history-item">아직 실행 기록이 없습니다.</div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'my_gpt/js/moderate.js' %}"></script>
+{% endblock %}
